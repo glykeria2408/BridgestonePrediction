@@ -1,71 +1,48 @@
-import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import r2_score
+# 📌 Project Overview
 
-# Generating synthetic company-related dataset
-np.random.seed(42)
-num_records = 1200  # Number of observations
+This project aims to analyze key operational and financial factors affecting **Bridgestone's monthly revenue** using **machine learning techniques**. By integrating data related to **production output, defective rates, supply chain delays, energy consumption, AI-driven optimizations, marketing spend, and employee count**, we seek to uncover insights that can optimize **revenue forecasting and operational efficiency**.
 
-enhanced_company_data = {
-    "Month": pd.date_range(start="2018-01-01", periods=num_records, freq='M').strftime('%Y-%m'),
-    "Production_Output": np.random.randint(5000, 20000, num_records),
-    "Defective_Rate": np.random.uniform(0.5, 5.0, num_records),
-    "Supply_Chain_Delays": np.random.randint(0, 10, num_records),
-    "Raw_Material_Cost": np.random.randint(50000, 150000, num_records),
-    "Energy_Consumption": np.random.randint(10000, 50000, num_records),
-    "AI_Optimized_Production": np.random.choice([0, 1], num_records, p=[0.7, 0.3]),
-    "Marketing_Spend": np.random.randint(50000, 300000, num_records),
-    "Employee_Count": np.random.randint(1000, 5000, num_records),
-    "Revenue": np.random.randint(500000, 2000000, num_records)
-}
+## 📂 Dataset Information
+We utilize a comprehensive dataset containing **1,200 monthly observations** with the following key variables:
 
-df = pd.DataFrame(enhanced_company_data)
+1. **Operational Data**
+   - **Production Output**: Number of tires produced per month.
+   - **Defective Rate**: Percentage of defective tires in production.
+   - **Supply Chain Delays**: Number of days of delay in receiving raw materials.
+   - **Raw Material Cost**: Monthly expenditure on raw materials.
+   - **Energy Consumption**: Total electricity used in kWh.
+   - **AI-Optimized Production**: Whether AI was used in production (0 = No, 1 = Yes).
+   
+2. **Financial & Workforce Data**
+   - **Marketing Spend**: Monthly expenditure on marketing campaigns.
+   - **Employee Count**: Number of employees working in production.
+   - **Revenue**: Monthly revenue generated (target variable for prediction).
 
-# Introducing some missing values
-for col in ["Production_Output", "Defective_Rate", "Energy_Consumption", "Marketing_Spend"]:
-    df.loc[np.random.choice(df.index, size=100, replace=False), col] = np.nan
+## 🚀 Workflow
 
-# Introducing inconsistent values
-df.loc[np.random.choice(df.index, size=20, replace=False), "AI_Optimized_Production"] = 2  # Should be 0 or 1
+### Step 1: Load the Datasets
+We start by reading the dataset into a **Pandas dataframe**, inspecting it for **missing values** and **inconsistencies**.
 
-# Data Wrangling
-# Fixing inconsistent AI_Optimized_Production values
-df["AI_Optimized_Production"] = df["AI_Optimized_Production"].replace(2, 1)
+### Step 2: Data Wrangling & Cleaning
+- **Fixing inconsistencies** in categorical variables (e.g., correcting AI-Optimized Production values).
+- **Handling missing values** using **mean imputation**.
+- **Standardizing numerical features** to improve model performance.
 
-# Handling missing values using mean imputation
-imputer = SimpleImputer(strategy="mean")
-df[["Production_Output", "Defective_Rate", "Energy_Consumption", "Marketing_Spend"]] = imputer.fit_transform(
-    df[["Production_Output", "Defective_Rate", "Energy_Consumption", "Marketing_Spend"]]
-)
+### Step 3: Feature Engineering
+- **Extracting time-based features** from the month column.
+- **Transforming categorical data** for better predictive modeling.
 
-# Converting categorical time feature to numerical format
-df["Month_Num"] = np.arange(1, len(df) + 1)
+### Step 4: Predicting Monthly Revenue
+- Implementing a **Random Forest Regressor** to estimate revenue based on operational factors.
+- **Splitting the data** into training and testing sets.
+- **Evaluating model performance** using **R² score**.
 
-# Splitting the dataset into features and target variable
-X = df.drop(columns=["Month", "Revenue"])
-y = df["Revenue"]
+## 📊 Suggested Power BI Visualizations
+1. **Revenue vs. Marketing Spend** - A scatter plot to analyze the correlation between marketing investment and revenue growth.
+2. **Production Output vs. Revenue** - A line or bar chart comparing production levels to monthly revenue trends.
+3. **AI-Driven Production Impact** - A stacked bar chart showing revenue performance for AI-optimized vs. non-AI production months.
 
-# Splitting into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+This project serves as a **data-driven foundation for optimizing operational decisions** and improving **revenue forecasting** at Bridgestone. 🚀
 
-# Standardizing the feature variables
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
-
-# Building and Training the Random Forest Regressor Model
-model = RandomForestRegressor(n_estimators=100, random_state=42)
-model.fit(X_train_scaled, y_train)
-
-# Making Predictions
-y_pred = model.predict(X_test_scaled)
-
-# Evaluating the model
-r2_score_result = r2_score(y_test, y_pred)
-print(f"R² Score: {r2_score_result}")
 
 
