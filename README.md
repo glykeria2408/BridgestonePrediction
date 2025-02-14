@@ -38,7 +38,7 @@ We start by reading the dataset into a **Pandas dataframe**, inspecting it for *
 - **Splitting the data** into training and testing sets.
 - **Evaluating model performance** using **R² score**.
 
-## 📊 Suggested Power BI Visualizations
+## 📊Power BI Visualizations
 1. **Revenue vs. Marketing Spend** - A scatter plot to analyze the correlation between marketing investment and revenue growth.
 2. **Production Output vs. Revenue** - A line or bar chart comparing production levels to monthly revenue trends.
 3. **AI-Driven Production Impact** - A stacked bar chart showing revenue performance for AI-optimized vs. non-AI production months.
